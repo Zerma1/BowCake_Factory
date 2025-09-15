@@ -1,0 +1,51 @@
+/* Reset basique */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #app {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  background-color: #d8d2d2; /* pour tester */
+  color: #000000;
+  font-family: Arial, sans-serif;
+}
+
+a{
+  color: #000000;
+  text-decoration: none;
+}
+
+a:hover{
+  color: #000000;
+  text-decoration: underline;
+}
+
+a:active{
+  color: #000000;
+  text-decoration: none;
+}
+
+.color_dominante_rouge{
+  color: #B8322D;
+}
+
+.color_soutien_fonce{
+  color: #4A1111;
+}
+
+.color_contraste{
+  color: #F6ECBC;
+}
+
+.menue_centre{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
