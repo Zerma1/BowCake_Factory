@@ -3,8 +3,7 @@ package fr.cepn.testspringpo84.security.jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import fr.cepn.testspringpo84.security.models.UserDetailsImpl;
-import org.apache.commons.lang3.time.DateUtils;
+import fr.cepn.testspringpo84.security.models.UtilisateurDetailsImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,7 +23,7 @@ public class JwtUtils {
     private int jwtExpirationMs = 86_400_000;
 
     public String generateJwtToken(Authentication authentication) {
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        UtilisateurDetailsImpl userDetails = (UtilisateurDetailsImpl) authentication.getPrincipal();
         GrantedAuthority role = userDetails.getAuthorities().stream().findFirst().get();
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())

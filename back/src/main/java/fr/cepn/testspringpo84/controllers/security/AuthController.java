@@ -1,5 +1,6 @@
 package fr.cepn.testspringpo84.controllers.security;
 
+import fr.cepn.testspringpo84.controllers.dtos.AuthDto;
 import jakarta.validation.Valid;
 import fr.cepn.testspringpo84.security.jwt.JwtUtils;
 import org.springframework.http.ResponseEntity;
@@ -38,5 +39,4 @@ public class AuthController {
 
         return ResponseEntity.ok(Map.of("token", jwt));
     }
-
 }

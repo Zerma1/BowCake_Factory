@@ -2,7 +2,7 @@ package fr.cepn.testspringpo84.security;
 
 import fr.cepn.testspringpo84.security.jwt.AuthTokenFilter;
 import fr.cepn.testspringpo84.security.jwt.JwtUtils;
-import fr.cepn.testspringpo84.security.services.UserDetailsServiceImpl;
+import fr.cepn.testspringpo84.security.services.IMPL.UtilisateurDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -24,15 +24,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 public class WebSecurityConfig {
 
-    private final UserDetailsServiceImpl userDetailsServiceImpl;
+    private final UtilisateurDetailsServiceImpl utilisateurDetailsServiceImpl;
 
-    public WebSecurityConfig(UserDetailsServiceImpl userDetailsServiceImpl) {
-        this.userDetailsServiceImpl = userDetailsServiceImpl;
+    public WebSecurityConfig(UtilisateurDetailsServiceImpl utilisateurDetailsServiceImpl) {
+        this.utilisateurDetailsServiceImpl = utilisateurDetailsServiceImpl;
     }
 
     @Bean
     public AuthTokenFilter authTokenFilter(JwtUtils jwtUtils) {
-        return new AuthTokenFilter(jwtUtils, userDetailsServiceImpl);
+        return new AuthTokenFilter(jwtUtils, utilisateurDetailsServiceImpl);
     }
 
     @Bean
@@ -48,7 +48,7 @@ public class WebSecurityConfig {
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setUserDetailsService(userDetailsServiceImpl);
+        daoAuthenticationProvider.setUserDetailsService(utilisateurDetailsServiceImpl);
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         return daoAuthenticationProvider;
     }

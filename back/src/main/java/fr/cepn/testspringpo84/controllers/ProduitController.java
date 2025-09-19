@@ -4,7 +4,7 @@ package fr.cepn.testspringpo84.controllers;
 import fr.cepn.testspringpo84.controllers.dtos.ProduitDto;
 import fr.cepn.testspringpo84.controllers.dtos.assemblers.ProduitDtoAssemblers;
 import fr.cepn.testspringpo84.models.Produit;
-import fr.cepn.testspringpo84.services.ProduitService;
+import fr.cepn.testspringpo84.services.impl.ProduitServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,11 +17,11 @@ import java.util.Optional;
 @RequestMapping("/api/v1/produit")
 public class ProduitController {
 
-    private final ProduitService produitService;
+    private final ProduitServiceImpl produitService;
     private final ProduitDtoAssemblers produitDtoAssemblers;
 
     public ProduitController(
-            ProduitService produitService,
+            ProduitServiceImpl produitService,
             ProduitDtoAssemblers produitDtoAssemblers) {
         this.produitService = produitService;
         this.produitDtoAssemblers = produitDtoAssemblers;
@@ -100,5 +100,4 @@ public class ProduitController {
             return ResponseEntity.internalServerError().build();
         }
     }
-
 }
