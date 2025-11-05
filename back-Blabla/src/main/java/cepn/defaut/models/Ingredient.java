@@ -13,27 +13,21 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
+@Setter(AccessLevel.PROTECTED)
 public class Ingredient extends AbstractPersistableWithIdSetter<Long> {
 
-    @Getter
-    @Setter(value = AccessLevel.PROTECTED)
     @NonNull
     @Length(max = 50)
     @Column(name = "nom", length = 50, nullable = false)
     private String nom;
 
-    @Getter
-    @Setter(value = AccessLevel.PROTECTED)
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Getter
-    @Setter(value = AccessLevel.PROTECTED)
     @Column(name = "allergene", nullable = false)
     private boolean allergene = false;
 
-    @Getter
-    @Setter(value = AccessLevel.PROTECTED)
     @ManyToMany(mappedBy = "ingredients")
     @Builder.Default
     private Set<Recette> recettes = new HashSet<>();

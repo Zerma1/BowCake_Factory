@@ -13,22 +13,18 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
+@Setter(value = AccessLevel.PROTECTED)
 public class StatuCommande extends AbstractPersistableWithIdSetter<Long> {
 
-    @Getter
-    @Setter(value = AccessLevel.PROTECTED)
     @NonNull
     @Length(max = 50)
     @Column(name = "statu", length = 50, nullable = false)
     private String statu;
 
-    @Getter
-    @Setter(value = AccessLevel.PROTECTED)
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Getter
-    @Setter(value = AccessLevel.PROTECTED)
     @OneToMany(mappedBy = "statut")
     @Builder.Default
     private Set<Commande> commandes = new HashSet<>();

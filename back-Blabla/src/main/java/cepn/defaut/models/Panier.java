@@ -13,31 +13,25 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
+@Setter(value = AccessLevel.PROTECTED)
 public class Panier extends AbstractPersistableWithIdSetter<Long> {
 
-    @Getter
-    @Setter(value = AccessLevel.PROTECTED)
     @NonNull
     @ManyToOne
     @JoinColumn(name = "commande_id", nullable = false)
     private Commande commande;
 
-    @Getter
-    @Setter(value = AccessLevel.PROTECTED)
     @NonNull
     @ManyToOne
     @JoinColumn(name = "produit_id", nullable = false)
     private Produit produit;
 
-    @Getter
-    @Setter(value = AccessLevel.PROTECTED)
     @NonNull
     @Min(1)
     @Column(name = "quantite", nullable = false)
     private Integer quantite;
 
-    @Getter
-    @Setter(value = AccessLevel.PROTECTED)
     @NonNull
     @DecimalMin(value = "0.0")
     @Column(name = "prix_unitaire", nullable = false, precision = 10, scale = 2)

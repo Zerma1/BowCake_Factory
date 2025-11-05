@@ -18,53 +18,40 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
+@Setter(value = AccessLevel.PROTECTED)
 public class Utilisateur extends AbstractPersistableWithIdSetter<Long> {
 
-    @Getter
-    @Setter(value = AccessLevel.PROTECTED)
+
     @NonNull
     @Length(max = 50)
     @Column(name = "username", length = 50, nullable = false, unique = true)
     private String username;
 
-    @Getter
-    @Setter(value = AccessLevel.PROTECTED)
     @NonNull
     @Email
     @Length(max = 100)
     @Column(name = "email", length = 100, nullable = false, unique = true)
     private String email;
 
-    @Getter
-    @Setter(value = AccessLevel.PROTECTED)
     @NonNull
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Getter
-    @Setter(value = AccessLevel.PROTECTED)
     @Length(max = 50)
     @Column(name = "prenom", length = 50)
     private String prenom;
 
-    @Getter
-    @Setter(value = AccessLevel.PROTECTED)
     @Length(max = 50)
     @Column(name = "nom", length = 50)
     private String nom;
 
-    @Getter
-    @Setter(value = AccessLevel.PROTECTED)
     @Column(name = "date_creation", nullable = false, updatable = false)
     private LocalDateTime dateCreation;
 
-    @Getter
-    @Setter(value = AccessLevel.PROTECTED)
     @Column(name = "actif", nullable = false)
     private boolean actif = true;
 
-    @Getter
-    @Setter(value = AccessLevel.PROTECTED)
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "utilisateur_role",

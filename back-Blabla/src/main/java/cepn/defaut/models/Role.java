@@ -13,22 +13,18 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
+@Setter(value = AccessLevel.PROTECTED)
 public class Role extends AbstractPersistableWithIdSetter<Long> {
 
-    @Getter
-    @Setter(value = AccessLevel.PROTECTED)
     @NonNull
     @Length(max = 50)
     @Column(name = "nom", length = 50, nullable = false, unique = true)
     private String nom;
 
-    @Getter
-    @Setter(value = AccessLevel.PROTECTED)
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Getter
-    @Setter(value = AccessLevel.PROTECTED)
     @ManyToMany(mappedBy = "roles")
     @Builder.Default
     private Set<Utilisateur> utilisateurs = new HashSet<>();

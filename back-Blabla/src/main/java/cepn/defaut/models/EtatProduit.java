@@ -15,29 +15,23 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
+@Setter(AccessLevel.PROTECTED)
 public class EtatProduit extends AbstractPersistableWithIdSetter<Long> {
 
-    @Getter
-    @Setter(value = AccessLevel.PROTECTED)
     @NonNull
     @Length(max = 50)
     @Column(name = "etat", length = 50, nullable = false)
     private String etat;
 
-    @Getter
-    @Setter(value = AccessLevel.PROTECTED)
     @NonNull
     @Column(name = "limite", nullable = false)
     private boolean limite = false;
 
-    @Getter
-    @Setter(value = AccessLevel.PROTECTED)
     @Column(name = "date_fin")
     @FutureOrPresent
     private LocalDate dateFin;
 
-    @Getter
-    @Setter(value = AccessLevel.PROTECTED)
     @OneToMany(mappedBy = "etatProduit")
     @Builder.Default
     private Set<Produit> produits = new HashSet<>();

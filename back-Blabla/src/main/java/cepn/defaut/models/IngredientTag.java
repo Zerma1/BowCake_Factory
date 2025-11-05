@@ -14,17 +14,15 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
+@Setter(AccessLevel.PROTECTED)
 public class IngredientTag extends AbstractPersistableWithIdSetter<Long> {
 
-    @Getter
-    @Setter(value = AccessLevel.PROTECTED)
     @NonNull
     @ManyToOne
     @JoinColumn(name = "ingredient_id", nullable = false)
     private Ingredient ingredient;
 
-    @Getter
-    @Setter(value = AccessLevel.PROTECTED)
     @NonNull
     @ManyToOne
     @JoinColumn(name = "tag_id", nullable = false)
