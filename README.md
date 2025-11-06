@@ -13,7 +13,7 @@ suivre la [Road Mape](https://github.com/Zerma1/BowCake_Factory/blob/main/Road%2
 - [ ] **Back**  
   - [X] Model  
   - [ ] Controleur  
-  - [ ] Repository  
+  - [x] Repository  
   - [ ] Security  
   - [ ] Services  
   - [ ] Test  
