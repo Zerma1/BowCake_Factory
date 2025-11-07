@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface StatuCommandeRepository extends JpaRepository<StatuCommande, Long> {
+public interface StatuCommandeRepository extends GeneralRepository<StatuCommande, Long> {
 
     /**
      * Trouve un statut de commande par son libellé
