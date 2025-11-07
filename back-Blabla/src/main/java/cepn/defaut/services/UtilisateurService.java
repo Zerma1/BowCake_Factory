@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -19,65 +20,51 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class UtilisateurService {
 
+    /* #region Dépendances */
     private final UtilisateurRepository utilisateurRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    /* #endregion Dépendances */
 
-    /**
-     * Récupère tous les utilisateurs
-     */
+    /* #region Récupération des utilisateurs */
     @Transactional(readOnly = true)
     public List<Utilisateur> findAll() {
         return utilisateurRepository.findAll();
     }
 
-    /**
-     * Récupère un utilisateur par son ID
-     */
     @Transactional(readOnly = true)
     public Utilisateur findById(Long id) {
         return utilisateurRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé avec l'ID: " + id));
     }
 
-    /**
-     * Récupère un utilisateur par son username
-     */
     @Transactional(readOnly = true)
     public Optional<Utilisateur> findByUsername(String username) {
         return utilisateurRepository.findByUsername(username);
     }
 
-    /**
-     * Récupère un utilisateur par son email
-     */
     @Transactional(readOnly = true)
     public Optional<Utilisateur> findByEmail(String email) {
         return utilisateurRepository.findByEmail(email);
     }
+    /* #endregion Récupération des utilisateurs */
 
-    /**
-     * Crée un nouvel utilisateur
-     */
+    /* #region Création et mise à jour */
     public Utilisateur create(Utilisateur utilisateur, Set<String> roleNames) {
         if (utilisateur.getId() != null) {
             throw new IllegalArgumentException("Un nouvel utilisateur ne peut pas avoir d'ID");
         }
 
-        // Vérifier que le username n'existe pas déjà
-        if (utilisateurRepository.existsByUsername(utilisateur.getUsername())) {
+        if (utilisateurRepository.existsByUsername(utilisateur.getUserName())) {
             throw new IllegalArgumentException("Le nom d'utilisateur existe déjà");
         }
 
-        // Vérifier que l'email n'existe pas déjà
         if (utilisateurRepository.existsByEmail(utilisateur.getEmail())) {
             throw new IllegalArgumentException("L'adresse email existe déjà");
         }
 
-        // Encoder le mot de passe
         utilisateur.setPassword(passwordEncoder.encode(utilisateur.getPassword()));
 
-        // Assigner les rôles
         if (roleNames != null && !roleNames.isEmpty()) {
             Set<Role> roles = new HashSet<>();
             for (String roleName : roleNames) {
@@ -87,7 +74,6 @@ public class UtilisateurService {
             }
             utilisateur.getRoles().addAll(roles);
         } else {
-            // Rôle par défaut: USER
             Role userRole = roleRepository.findByNom("USER")
                     .orElseThrow(() -> new EntityNotFoundException("Rôle USER non trouvé"));
             utilisateur.getRoles().add(userRole);
@@ -96,36 +82,29 @@ public class UtilisateurService {
         return utilisateurRepository.save(utilisateur);
     }
 
-    /**
-     * Met à jour un utilisateur existant
-     */
     public Utilisateur update(Long id, Utilisateur utilisateurDetails) {
         Utilisateur utilisateur = findById(id);
 
-        // Vérifier que le nouveau username n'est pas déjà utilisé par un autre utilisateur
-        if (!utilisateur.getUsername().equals(utilisateurDetails.getUsername()) &&
-                utilisateurRepository.existsByUsername(utilisateurDetails.getUsername())) {
+        if (!utilisateur.getUserName().equals(utilisateurDetails.getUserName()) &&
+                utilisateurRepository.existsByUsername(utilisateurDetails.getUserName())) {
             throw new IllegalArgumentException("Le nom d'utilisateur existe déjà");
         }
 
-        // Vérifier que le nouvel email n'est pas déjà utilisé par un autre utilisateur
         if (!utilisateur.getEmail().equals(utilisateurDetails.getEmail()) &&
                 utilisateurRepository.existsByEmail(utilisateurDetails.getEmail())) {
             throw new IllegalArgumentException("L'adresse email existe déjà");
         }
 
-        utilisateur.setUsername(utilisateurDetails.getUsername());
+        utilisateur.setUserName(utilisateurDetails.getUserName());
         utilisateur.setEmail(utilisateurDetails.getEmail());
         utilisateur.setPrenom(utilisateurDetails.getPrenom());
         utilisateur.setNom(utilisateurDetails.getNom());
-        utilisateur.setActif(utilisateurDetails.isActif());
 
         return utilisateurRepository.save(utilisateur);
     }
+    /* #endregion Création et mise à jour */
 
-    /**
-     * Change le mot de passe d'un utilisateur
-     */
+    /* #region Gestion des mots de passe */
     public void changePassword(Long id, String oldPassword, String newPassword) {
         Utilisateur utilisateur = findById(id);
 
@@ -137,28 +116,23 @@ public class UtilisateurService {
         utilisateurRepository.save(utilisateur);
     }
 
-    /**
-     * Réinitialise le mot de passe d'un utilisateur (par admin)
-     */
     public void resetPassword(Long id, String newPassword) {
         Utilisateur utilisateur = findById(id);
         utilisateur.setPassword(passwordEncoder.encode(newPassword));
         utilisateurRepository.save(utilisateur);
     }
+    /* #endregion Gestion des mots de passe */
 
-    /**
-     * Supprime un utilisateur
-     */
+    /* #region Suppression */
     public void delete(Long id) {
         if (!utilisateurRepository.existsById(id)) {
             throw new EntityNotFoundException("Utilisateur non trouvé avec l'ID: " + id);
         }
         utilisateurRepository.deleteById(id);
     }
+    /* #endregion Suppression */
 
-    /**
-     * Ajoute un rôle à un utilisateur
-     */
+    /* #region Gestion des rôles */
     public Utilisateur addRole(Long userId, String roleName) {
         Utilisateur utilisateur = findById(userId);
         Role role = roleRepository.findByNom(roleName)
@@ -168,9 +142,6 @@ public class UtilisateurService {
         return utilisateurRepository.save(utilisateur);
     }
 
-    /**
-     * Retire un rôle à un utilisateur
-     */
     public Utilisateur removeRole(Long userId, String roleName) {
         Utilisateur utilisateur = findById(userId);
         Role role = roleRepository.findByNom(roleName)
@@ -179,13 +150,14 @@ public class UtilisateurService {
         utilisateur.getRoles().remove(role);
         return utilisateurRepository.save(utilisateur);
     }
+    /* #endregion Gestion des rôles */
 
-    /**
-     * Recherche des utilisateurs par nom ou prénom
-     */
+    /* #region Recherche */
     @Transactional(readOnly = true)
     public List<Utilisateur> searchByName(String searchTerm) {
         return utilisateurRepository.findByNomContainingIgnoreCaseOrPrenomContainingIgnoreCase(
                 searchTerm, searchTerm);
     }
+    /* #endregion Recherche */
 }
+
