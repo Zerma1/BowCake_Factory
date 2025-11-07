@@ -12,8 +12,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "utilisateur", uniqueConstraints = {
-        @UniqueConstraint(name = "uk_utilisateur_email", columnNames = {"email"}),
-        @UniqueConstraint(name = "uk_utilisateur_username", columnNames = {"username"})
+        @UniqueConstraint(name = "uk_utilisateur_email", columnNames = {"email"})
 })
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,11 +21,7 @@ import java.util.Set;
 @Setter(value = AccessLevel.PROTECTED)
 public class Utilisateur extends AbstractPersistableWithIdSetter<Long> {
 
-
-    @NonNull
-    @Length(max = 50)
-    @Column(name = "username", length = 50, nullable = false, unique = true)
-    private String username;
+    /* #region Stoké en bdd */
 
     @NonNull
     @Email
@@ -38,19 +33,22 @@ public class Utilisateur extends AbstractPersistableWithIdSetter<Long> {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Length(max = 50)
-    @Column(name = "prenom", length = 50)
-    private String prenom;
-
-    @Length(max = 50)
-    @Column(name = "nom", length = 50)
-    private String nom;
+    @Length(max = 100)
+    @Column(name = "userName", length = 100, nullable = false)
+    private String userName;
 
     @Column(name = "date_creation", nullable = false, updatable = false)
     private LocalDateTime dateCreation;
 
-    @Column(name = "actif", nullable = false)
-    private boolean actif = true;
+    /* #endregion Stoké en bdd */
+
+    /* #region Champs calculés (non stockés) */
+
+    @Transient
+    private String nom;
+
+    @Transient
+    private String prenom;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -61,14 +59,50 @@ public class Utilisateur extends AbstractPersistableWithIdSetter<Long> {
     @Builder.Default
     private Set<Role> roles = new HashSet<>();
 
-    @Getter
-    @Setter(value = AccessLevel.PROTECTED)
     @OneToMany(mappedBy = "utilisateur", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private Set<Commande> commandes = new HashSet<>();
 
+    /* #endregion Champs calculés (non stockés) */
+
+    /* #region Génération automatiquement des champs */
+
     @PrePersist
-    protected void onCreate() {
-        dateCreation = LocalDateTime.now();
+    @PreUpdate
+    protected void updateUserName() {
+        if (nom != null && prenom != null) {
+            this.userName = normalize(nom) + "_" + normalize(prenom);
+        } else if (this.userName == null) {
+            this.userName = "Inconnu";
+        }
+
+        if (dateCreation == null) {
+            dateCreation = LocalDateTime.now();
+        }
     }
+
+    @PostLoad
+    protected void splitUserName() {
+        if (this.userName != null && this.userName.contains(" ")) {
+            String[] parts = this.userName.split("_", 2);
+            this.nom = parts[0];
+            this.prenom = parts[1];
+        } else {
+            this.nom = this.userName;
+            this.prenom = "";
+        }
+    }
+
+    /* #endregion Génération automatiquement des champs */
+
+    /* #region Méthodes utilitaires privées */
+
+    private String normalize(String s) {
+        if (s == null || s.isEmpty()) return "";
+        // retire les underscores existants pour éviter les conflits
+        s = s.replace("_", "-");
+        return s.substring(0,1).toUpperCase() + s.substring(1).toLowerCase();
+    }
+
+    /* #endregion Méthodes utilitaires privées */
 }
