@@ -13,7 +13,7 @@ Voici une road map structurée pour votre projet e-commerce de bowlcakes :
 ### 1.2 Architecture Backend
 
  - [x] Créer les Repositories (Spring Data JPA)
- - [ ] Développer les Services (logique métier)
+ - [x] Développer les Services (logique métier)
  - [ ] Implémenter les Controllers REST
  - [ ] Ajouter la gestion des DTOs (mappers)
  - [ ] Configurer la validation des données
