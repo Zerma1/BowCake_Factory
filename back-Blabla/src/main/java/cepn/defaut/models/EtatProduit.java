@@ -1,38 +1,34 @@
-package cepn.defaut.models;
+package fr.cepn.testspringpo84.models;
 
-import cepn.defaut.models.common.AbstractPersistableWithIdSetter;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.*;
 import lombok.*;
-import org.hibernate.validator.constraints.Length;
+import org.springframework.data.jpa.domain.AbstractPersistable;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
-@Table(name = "etat_produit", uniqueConstraints = @UniqueConstraint(name = "pk_etat_produit", columnNames = {"pk_etat_produit"}))
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@Getter
-@Setter(AccessLevel.PROTECTED)
-public class EtatProduit extends AbstractPersistableWithIdSetter<Long> {
-
+@Table(name = "etatProduit", uniqueConstraints = @UniqueConstraint(name = "uk__etatProduit_id", columnNames = {"id"}))
+@ToString(of = {"id","etat", "temps"}, callSuper = true)
+@EqualsAndHashCode(of = {"id","etat", "temps"}, callSuper = false)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class EtatProduit extends AbstractPersistable<Long> {
+    //LBK
+    @Getter
+    @Setter(value = AccessLevel.PRIVATE)
     @NonNull
-    @Length(max = 50)
-    @Column(name = "etat", length = 50, nullable = false)
+    //BV
+    @NotNull(message = "etat ne doit pas etre null")
+    //JPA
+    @Column(name = "etat", nullable = false)
     private String etat;
 
-    @NonNull
-    @Column(name = "limite", nullable = false)
-    private boolean limite = false;
-
-    @Column(name = "date_fin")
-    @FutureOrPresent
+    //LBK
+    @Getter
+    @Setter(value = AccessLevel.PRIVATE)
+    //BV
+    @Future
+    //JPA
+    @Column(name = "temps", nullable = false)
     private LocalDate dateFin;
-
-    @OneToMany(mappedBy = "etatProduit")
-    @Builder.Default
-    private Set<Produit> produits = new HashSet<>();
 }

@@ -1,77 +1,70 @@
-package cepn.defaut.models;
+package fr.cepn.testspringpo84.models;
 
-import cepn.defaut.models.common.AbstractPersistableWithIdSetter;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.*;
 import lombok.*;
-import org.hibernate.validator.constraints.Length;
+import org.springframework.data.jpa.domain.AbstractPersistable;
 
-import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Entity
-@Table(name = "produit", uniqueConstraints = @UniqueConstraint(name = "pk_produit", columnNames = {"pk_produit"}))
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Table(name = "produit", uniqueConstraints = @UniqueConstraint(name = "uk__produit_id", columnNames = {"id"}))
+@ToString(of = {"nom"}, callSuper = true)
+@EqualsAndHashCode(of = {"id","nom"}, callSuper = false)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Getter
-@Setter(value = AccessLevel.PROTECTED)
-public class Produit extends AbstractPersistableWithIdSetter<Long> {
+@Setter(value = AccessLevel.PRIVATE)
+public class Produit extends AbstractPersistable<Long> {
 
+    //LBK
     @NonNull
-    @Length(max = 100)
-    @Column(name = "nom", length = 100, nullable = false)
+    //BV
+    @NotNull(message = "nom ne doit pas etre null")
+    //JPA
+    @Column(name = "nom", nullable = false)
     private String nom;
 
-    @Column(name = "description", columnDefinition = "TEXT")
-    private String description;
-
+    //LBK
     @NonNull
-    @DecimalMin(value = "0.0", inclusive = false)
-    @Column(name = "prix_ht", nullable = false, precision = 10, scale = 2)
-    private BigDecimal prixHT;
-
-    @NonNull
-    @DecimalMin(value = "0.0")
-    @Column(name = "tva", nullable = false, precision = 5, scale = 2)
-    private BigDecimal tva;
-
-    @NonNull
+    //BV
+    @NotNull(message = "quantite ne doit pas etre null")
+    //JPA
+    @Column(name = "quantite", nullable = false)
     @Min(0)
-    @Column(name = "stock", nullable = false)
-    private Integer stock = 0;
+    private Integer quantite;
 
-    @Length(max = 255)
-    @Column(name = "image_url", length = 255)
-    private String imageUrl;
-
+    //LBK
     @NonNull
-    @ManyToOne
-    @JoinColumn(name = "type_produit_id", nullable = false)
-    private TypeProduit typeProduit;
+    //BV
+    @NotNull(message = "prix ne doit pas etre null")
+    //JPA
+    @Column(name = "prix", nullable = false)
+    @Min(0)
+    private Integer prix;
 
-    @NonNull
-    @ManyToOne
-    @JoinColumn(name = "etat_produit_id", nullable = false)
-    private EtatProduit etatProduit;
+    /* #region produit_tag */
 
-    @ManyToOne
-    @JoinColumn(name = "recette_id")
-    private Recette recette;
+        @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+        @JoinTable(
+                name = "produit_tags",
+                joinColumns = @JoinColumn(name = "produit_id"),
+                inverseJoinColumns = @JoinColumn(name = "tag_id")
+        )
+        private List<Tags> tags = new ArrayList<>();
 
-    @ManyToMany
-    @JoinTable(
-            name = "produit_tag",
-            joinColumns = @JoinColumn(name = "produit_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
-    @Builder.Default
-    private Set<Tag> tags = new HashSet<>();
+    /* #endregion produit_tag */
 
-    @Transient
-    public BigDecimal getPrixTTC() {
-        return prixHT.multiply(BigDecimal.ONE.add(tva));
-    }
+    //TODO: Methode a implementer
+//    public void addTag(Tags tag) {
+//        this.tags.add(tag);
+//        tag.getProduits().add(this);
+//    }
+//
+//    public void removeTag(Tags tag) {
+//        this.tags.remove(tag);
+//        tag.getProduits().remove(this);
+//    }
+
 }

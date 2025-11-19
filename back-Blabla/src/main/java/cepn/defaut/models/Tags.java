@@ -6,11 +6,11 @@ import lombok.*;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 @Entity
-@Table(name = "TypeProduit", uniqueConstraints = @UniqueConstraint(name = "uk__TypeProduit_id", columnNames = {"id"}))
-@ToString(of = {"nom", ""}, callSuper = true)
-@EqualsAndHashCode(of = {"nom", ""}, callSuper = false)
+@Table(name = "tags", uniqueConstraints = @UniqueConstraint(name = "uk__tags_id", columnNames = {"id"}))
+@ToString(of = {"id", "nom"}, callSuper = true)
+@EqualsAndHashCode(of = {"id", "nom"}, callSuper = false)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class TypeProduit extends AbstractPersistable<Long> {
+public class Tags extends AbstractPersistable<Long> {
     //LBK
     @Getter
     @Setter(value = AccessLevel.PRIVATE)

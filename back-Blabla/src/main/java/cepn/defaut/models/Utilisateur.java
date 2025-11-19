@@ -1,108 +1,53 @@
-package cepn.defaut.models;
+package fr.cepn.testspringpo84.models;
 
-import cepn.defaut.models.common.AbstractPersistableWithIdSetter;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.*;
 import lombok.*;
-import org.hibernate.validator.constraints.Length;
-
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import org.springframework.data.jpa.domain.AbstractPersistable;
 
 @Entity
-@Table(name = "utilisateur", uniqueConstraints = {
-        @UniqueConstraint(name = "uk_utilisateur_email", columnNames = {"email"})
-})
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Table(name = "utilisateur", uniqueConstraints = @UniqueConstraint(name = "uk__user_id", columnNames = {"id"}))
+@ToString(of = {"nom", "role"}, callSuper = true)
+@EqualsAndHashCode(of = {"nom", "role", "email"}, callSuper = false)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Getter
 @Setter(value = AccessLevel.PROTECTED)
-public class Utilisateur extends AbstractPersistableWithIdSetter<Long> {
-
-    /* #region Stoké en bdd */
+public class Utilisateur extends AbstractPersistable<Long> {
 
     @NonNull
-    @Email
-    @Length(max = 100)
-    @Column(name = "email", length = 100, nullable = false, unique = true)
+    @NotNull(message = "nom ne doit pas etre null")
+    @Column(name = "nom", nullable = false)
+    private String nom;
+
+    @NonNull
+    @NotNull(message = "role ne doit pas etre null")
+    @Column(name = "role", nullable = false)
+    private String role;
+
+    @NonNull
+    @NotNull(message = "le email ne doit pas être null")
+    @NotBlank(message = "le email ne doit pas être null ou vide")
+    @Size(min = 5, max = 100, message = "Nom nombre caratères min = " + 5 + ", max = " + 100)
+    @Column(name = "email", nullable = false, length = 100)
     private String email;
 
     @NonNull
-    @Column(name = "password", nullable = false)
-    private String password;
+    @NotNull(message = "le numerot de telephon ne doit pas être null")
+    @NotBlank(message = "le numerot de telephon ne doit pas être null ou vide")
+    @Size(min = 10, max = 10, message = "Nom nombre caratères doit etre egale a 10")
+    @Column(name = "telephon", nullable = false, length = 10)
+    private Integer telephon;
 
-    @Length(max = 100)
-    @Column(name = "userName", length = 100, nullable = false)
-    private String userName;
+    @NonNull
+    @NotNull(message = "le motdepasse ne doit pas être null")
+    @NotBlank(message = "le motdepasse ne doit pas être null ou vide")
+    @Size(min = 10, max = 10, message = "motdepasse nombre caratères doit etre egale a 10")
+    @Column(name = "motdepasse", nullable = false, length = 10)
+    //TODO: eventuelement trouver un moyer de hacher le mdp en attendent on applique la metode TGCM
+    private String motDePasse;
 
-    @Column(name = "date_creation", nullable = false, updatable = false)
-    private LocalDateTime dateCreation;
-
-    /* #endregion Stoké en bdd */
-
-    /* #region Champs calculés (non stockés) */
-
-    @Transient
-    private String nom;
-
-    @Transient
-    private String prenom;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "utilisateur_role",
-            joinColumns = @JoinColumn(name = "utilisateur_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
-    @Builder.Default
-    private Set<Role> roles = new HashSet<>();
-
-    @OneToMany(mappedBy = "utilisateur", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private Set<Commande> commandes = new HashSet<>();
-
-    /* #endregion Champs calculés (non stockés) */
-
-    /* #region Génération automatiquement des champs */
-
-    @PrePersist
-    @PreUpdate
-    protected void updateUserName() {
-        if (nom != null && prenom != null) {
-            this.userName = normalize(nom) + "_" + normalize(prenom);
-        } else if (this.userName == null) {
-            this.userName = "Inconnu";
-        }
-
-        if (dateCreation == null) {
-            dateCreation = LocalDateTime.now();
-        }
-    }
-
-    @PostLoad
-    protected void splitUserName() {
-        if (this.userName != null && this.userName.contains(" ")) {
-            String[] parts = this.userName.split("_", 2);
-            this.nom = parts[0];
-            this.prenom = parts[1];
-        } else {
-            this.nom = this.userName;
-            this.prenom = "";
-        }
-    }
-
-    /* #endregion Génération automatiquement des champs */
-
-    /* #region Méthodes utilitaires privées */
-
-    private String normalize(String s) {
-        if (s == null || s.isEmpty()) return "";
-        // retire les underscores existants pour éviter les conflits
-        s = s.replace("_", "-");
-        return s.substring(0,1).toUpperCase() + s.substring(1).toLowerCase();
-    }
-
-    /* #endregion Méthodes utilitaires privées */
+    @NonNull
+    @Min(0)
+    @Column(name = "points", nullable = false, length = 10)
+    private Integer points = 0;
 }

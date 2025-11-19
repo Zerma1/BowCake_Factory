@@ -1,79 +1,57 @@
-package cepn.defaut.models;
+package fr.cepn.testspringpo84.models;
 
-import cepn.defaut.models.common.AbstractPersistableWithIdSetter;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.*;
 import lombok.*;
-import org.hibernate.validator.constraints.Length;
+import org.springframework.data.jpa.domain.AbstractPersistable;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.time.LocalDate;
 
 @Entity
-@Table(name = "commande", uniqueConstraints = @UniqueConstraint(name = "pk_commande", columnNames = {"pk_commande"}))
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Table(name = "commande", uniqueConstraints = @UniqueConstraint(name = "uk__commande_id", columnNames = {"id"}))
+@ToString(of = {"uk__commande_id","fk_satut_commande", "fk_user"}, callSuper = true)
+@EqualsAndHashCode(of = {"uk__commande_id","fk_satut_commande", "fk_user"}, callSuper = false)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+
 @Getter
-@Setter(AccessLevel.PROTECTED)
-public class Commande extends AbstractPersistableWithIdSetter<Long> {
+@Setter(value = AccessLevel.PRIVATE)
+public class Commande extends AbstractPersistable<Long> {
 
+    //LBK
     @NonNull
-    @Column(name = "numero_commande", length = 50, nullable = false, unique = true)
-    @Length(max = 50)
-    private String numeroCommande;
-
-    @NonNull
-    @ManyToOne
-    @JoinColumn(name = "utilisateur_id", nullable = false)
-    private Utilisateur utilisateur;
-
-    @NonNull
+    //BV
+    @NotNull(message = "date_commande ne doit pas etre null")
+    @PastOrPresent
+    //JPA
     @Column(name = "date_commande", nullable = false)
-    private LocalDateTime dateCommande;
+    private LocalDate dateCommande;
+
+    //BV
+    @PastOrPresent
+    //JPA
+    @Column(name = "date_livraison", nullable = false)
+    private LocalDate dateLivraison;
+
+    //LBK
+    @NonNull
+    //BV
+    @NotNull(message = "prix_facture ne doit pas etre null")
+    //JPA
+    @Column(name = "prix_facture", nullable = false)
+    private Integer prixFacture;
+
+    /* #region forgoing key */
 
     @NonNull
-    @DecimalMin(value = "0.0")
-    @Column(name = "montant_total", nullable = false, precision = 10, scale = 2)
-    private BigDecimal montantTotal;
+    @OneToOne
+    @JoinColumn(name = "fk_satut_commande", nullable = false)
+    private String fkSatutCommande;
 
     @NonNull
     @ManyToOne
-    @JoinColumn(name = "statut_id", nullable = false)
-    private StatuCommande statut;
+    @JoinColumn(name = "fk_user", nullable = false)
+    private String fkUser;
 
-    @Length(max = 255)
-    @Column(name = "adresse_livraison", length = 255)
-    private String adresseLivraison;
+    /* #endregion forgoing key */
 
-    @Length(max = 100)
-    @Column(name = "ville", length = 100)
-    private String ville;
-
-    @Length(max = 10)
-    @Column(name = "code_postal", length = 10)
-    private String codePostal;
-
-    @Length(max = 50)
-    @Column(name = "pays", length = 50)
-    private String pays;
-
-    @Column(name = "commentaire", columnDefinition = "TEXT")
-    private String commentaire;
-
-    @OneToMany(mappedBy = "commande", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private Set<Panier> paniers = new HashSet<>();
-
-    @PrePersist
-    protected void onCreate() {
-        if (dateCommande == null) {
-            dateCommande = LocalDateTime.now();
-        }
-        if (numeroCommande == null) {
-            numeroCommande = "CMD-" + System.currentTimeMillis();
-        }
-    }
 }

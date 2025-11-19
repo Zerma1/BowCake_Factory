@@ -1,12 +1,9 @@
-package cepn.defaut.models;
+package fr.cepn.testspringpo84.models;
 
-import cepn.defaut.models.common.AbstractPersistableWithIdSetter;
+import fr.cepn.testspringpo84.models.clefComposer.RecetteID;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.*;
-import org.hibernate.validator.constraints.Length;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "recette", uniqueConstraints = @UniqueConstraint(name = "pk_recette", columnNames = {"pk_recette"}))
@@ -14,43 +11,15 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @Getter
-@Setter(value = AccessLevel.PROTECTED)
-public class Recette extends AbstractPersistableWithIdSetter<Long> {
+@Setter(value = AccessLevel.PUBLIC)
+public class Recette {
+
+    @EmbeddedId
+    private RecetteID id;
 
     @NonNull
-    @Length(max = 100)
-    @Column(name = "nom", length = 100, nullable = false)
-    private String nom;
+    @Min(0)
+    @Column(name = "quantite")
+    private String quantite;
 
-    @Column(name = "description", columnDefinition = "TEXT")
-    private String description;
-
-    @Column(name = "instructions", columnDefinition = "TEXT")
-    private String instructions;
-
-    @Column(name = "temps_preparation")
-    private Integer tempsPreparation; // en minutes
-
-    @Column(name = "temps_cuisson")
-    private Integer tempsCuisson; // en minutes
-
-    @Column(name = "portions")
-    private Integer portions;
-
-    @Length(max = 255)
-    @Column(name = "image_url", length = 255)
-    private String imageUrl;
-
-    @ManyToMany
-    @JoinTable(
-            name = "recette_ingredient",
-            joinColumns = @JoinColumn(name = "recette_id"),
-            inverseJoinColumns = @JoinColumn(name = "ingredient_id")
-    )
-    @Builder.Default
-    private Set<Ingredient> ingredients = new HashSet<>();
-
-    @OneToMany(mappedBy = "recette")
-    @Builder.Default
-    private Set<Produit> produits = new HashSet<>();
 }
