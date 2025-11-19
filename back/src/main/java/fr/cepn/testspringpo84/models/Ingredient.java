@@ -10,13 +10,13 @@ import java.util.Set;
 
 @Entity
 @Table(name = "ingrediant", uniqueConstraints = @UniqueConstraint(name = "uk__ingrediant_id", columnNames = {"id"}))
-@ToString(of = {"nom", "quantite","prix"}, callSuper = true)
-@EqualsAndHashCode(of = {"id","nom", "quantite","prix"}, callSuper = false)
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@ToString(of = {"nom", "quantite","prix"}, callSuper = false)
+@EqualsAndHashCode(of = {"nom", "quantite","prix"}, callSuper = false)
+@NoArgsConstructor
 @AllArgsConstructor
-@Builder //ne comprend pas trop //TODO : demander PM
+@Builder
 @Getter
-@Setter(value = AccessLevel.PRIVATE)
+@Setter
 public class Ingredient extends AbstractPersistable<Long> {
 
     //LBK
@@ -44,14 +44,15 @@ public class Ingredient extends AbstractPersistable<Long> {
     private Integer prix;
 
     /* #region many to many */
-        //TODO: verifier avec le PM:
-                            //// ❌ Recette n'a pas de champ "ingredients" (c'est une table de jointure avec EmbeddedId)
-                            //// ⚠️ La modélisation semble incorrecte : Recette devrait être une vraie entité avec des relations
+
         @ManyToMany(mappedBy = "ingredients")
         private Set<Tags> tags = new HashSet<>();
 
+    //TODO: verifier avec le PM:
+    //// ❌ Recette n'a pas de champ "ingredients" (c'est une table de jointure avec EmbeddedId)
+    //// ⚠️ La modélisation semble incorrecte : Recette devrait être une vraie entité avec des relations
         @ManyToMany(mappedBy = "ingredients")
-        //@Builder.Default
+        @Builder.Default
         private Set<Recette> recettes = new HashSet<>();
 
     /* #endregion many to many */

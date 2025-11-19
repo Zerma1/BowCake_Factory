@@ -9,9 +9,9 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 @Table(name = "utilisateur", uniqueConstraints = @UniqueConstraint(name = "uk__utilisateur_id", columnNames = {"id"}))
 @ToString(of = {"nom", "role"}, callSuper = true)
 @EqualsAndHashCode(of = {"nom", "role", "email"}, callSuper = false)
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@NoArgsConstructor
 @Getter
-@Setter(value = AccessLevel.PROTECTED)
+@Setter
 public class Utilisateur extends AbstractPersistable<Long> {
 
     @NonNull

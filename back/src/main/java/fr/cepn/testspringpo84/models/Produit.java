@@ -12,10 +12,10 @@ import java.util.UUID;
 @Entity
 @Table(name = "produit", uniqueConstraints = @UniqueConstraint(name = "uk__produit_id", columnNames = {"id"}))
 @ToString(of = {"nom"}, callSuper = true)
-@EqualsAndHashCode(of = {"id","nom"}, callSuper = false)
+@EqualsAndHashCode(of = {"nom"}, callSuper = false)
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Getter
-@Setter(value = AccessLevel.PRIVATE)
+@Setter
 public class Produit extends AbstractPersistable<Long> {
 
     //LBK

@@ -12,7 +12,7 @@ import java.util.Set;
 @Table(name = "tags", uniqueConstraints = @UniqueConstraint(name = "uk__tags_id", columnNames = {"id"}))
 @ToString(of = {"nom"}, callSuper = true)
 @EqualsAndHashCode(of = {"nom"}, callSuper = true)
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
 public class Tags extends AbstractPersistable<Long> {
     //LBK
     @Getter
