@@ -8,74 +8,46 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 @Entity
 @Table(name = "utilisateur", uniqueConstraints = @UniqueConstraint(name = "uk__user_id", columnNames = {"id"}))
 @ToString(of = {"nom", "role"}, callSuper = true)
-@EqualsAndHashCode(of = {"nom", "id"}, callSuper = false)
+@EqualsAndHashCode(of = {"nom", "role", "email"}, callSuper = false)
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
+@Getter
+@Setter(value = AccessLevel.PROTECTED)
 public class Utilisateur extends AbstractPersistable<Long> {
-    //LBK
-    @Getter
-    @Setter(value = AccessLevel.PRIVATE)
+
     @NonNull
-    //BV
     @NotNull(message = "nom ne doit pas etre null")
-    //JPA
     @Column(name = "nom", nullable = false)
     private String nom;
 
-    //LBK
-    @Getter
-    @Setter(value = AccessLevel.PRIVATE)
     @NonNull
-    //BV
     @NotNull(message = "role ne doit pas etre null")
-    //JPA
     @Column(name = "role", nullable = false)
     private String role;
 
-    //LBK
-    @Getter
-    @Setter(value = AccessLevel.PROTECTED)
     @NonNull
-    //BV
     @NotNull(message = "le email ne doit pas être null")
     @NotBlank(message = "le email ne doit pas être null ou vide")
     @Size(min = 5, max = 100, message = "Nom nombre caratères min = " + 5 + ", max = " + 100)
-    //JPA
     @Column(name = "email", nullable = false, length = 100)
     private String email;
 
-    //LBK
-    @Getter
-    @Setter(value = AccessLevel.PROTECTED)
     @NonNull
-    //BV
     @NotNull(message = "le numerot de telephon ne doit pas être null")
     @NotBlank(message = "le numerot de telephon ne doit pas être null ou vide")
     @Size(min = 10, max = 10, message = "Nom nombre caratères doit etre egale a 10")
-    //JPA
     @Column(name = "telephon", nullable = false, length = 10)
     private Integer telephon;
 
-    //LBK
-    @Getter
-    @Setter(value = AccessLevel.PROTECTED)
     @NonNull
-    //BV
     @NotNull(message = "le motdepasse ne doit pas être null")
     @NotBlank(message = "le motdepasse ne doit pas être null ou vide")
     @Size(min = 10, max = 10, message = "motdepasse nombre caratères doit etre egale a 10")
-    //JPA
     @Column(name = "motdepasse", nullable = false, length = 10)
     //TODO: eventuelement trouver un moyer de hacher le mdp en attendent on applique la metode TGCM
     private String motDePasse;
 
-    //LBK
-    @Getter
-    @Setter(value = AccessLevel.PROTECTED)
     @NonNull
-    //BV
-    @NotNull(message = "le nom ne doit pas être null")
-    @NotBlank(message = "le nom ne doit pas être null ou vide")
-    //JPA
+    @Min(0)
     @Column(name = "points", nullable = false, length = 10)
     private Integer points = 0;
 }

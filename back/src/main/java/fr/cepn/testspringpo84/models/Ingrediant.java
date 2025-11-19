@@ -5,15 +5,21 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "ingrediant", uniqueConstraints = @UniqueConstraint(name = "uk__ingrediant_id", columnNames = {"id"}))
 @ToString(of = {"nom", "quantite","prix"}, callSuper = true)
 @EqualsAndHashCode(of = {"id","nom", "quantite","prix"}, callSuper = false)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
+@Builder //ne comprend pas trop //TODO : demander PM
+@Getter
+@Setter(value = AccessLevel.PRIVATE)
 public class Ingrediant extends AbstractPersistable<Long> {
+
     //LBK
-    @Getter
-    @Setter(value = AccessLevel.PRIVATE)
     @NonNull
     //BV
     @NotNull(message = "nom ne doit pas etre null")
@@ -22,8 +28,6 @@ public class Ingrediant extends AbstractPersistable<Long> {
     private String nom;
 
     //LBK
-    @Getter
-    @Setter(value = AccessLevel.PRIVATE)
     @NonNull
     //BV
     @NotNull(message = "quantite ne doit pas etre null")
@@ -32,12 +36,21 @@ public class Ingrediant extends AbstractPersistable<Long> {
     private Integer quantite;
 
     //LBK
-    @Getter
-    @Setter(value = AccessLevel.PRIVATE)
     @NonNull
     //BV
     @NotNull(message = "prix ne doit pas etre null")
     //JPA
     @Column(name = "prix", nullable = false)
     private Integer prix;
+
+    /* #region many to many */
+    //TODO: verifier avec le PM
+    @ManyToMany(mappedBy = "ingredients")
+    private Set<Tags> tags = new HashSet<>();
+
+    @ManyToMany(mappedBy = "ingredients")
+    //@Builder.Default
+    private Set<Recette> recettes = new HashSet<>();
+
+    /* #endregion many to many */
 }

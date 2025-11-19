@@ -9,33 +9,15 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "commande", uniqueConstraints = @UniqueConstraint(name = "uk__commande_id", columnNames = {"id"}))
-@ToString(of = {"fk_satut_commande", "fk_user"}, callSuper = true)
-@EqualsAndHashCode(of = {"fk_satut_commande", "fk_user"}, callSuper = false)
+@ToString(of = {"uk__commande_id","fk_satut_commande", "fk_user"}, callSuper = true)
+@EqualsAndHashCode(of = {"uk__commande_id","fk_satut_commande", "fk_user"}, callSuper = false)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+
+@Getter
+@Setter(value = AccessLevel.PRIVATE)
 public class Commande extends AbstractPersistable<Long> {
-    //LBK
-    @Getter
-    @Setter(value = AccessLevel.PRIVATE)
-    @NonNull
-    //BV
-    @NotNull(message = "fk_satut_commande ne doit pas etre null")
-    //JPA
-    @Column(name = "fk_satut_commande", nullable = false)
-    private String fkSatutCommande;
 
     //LBK
-    @Getter
-    @Setter(value = AccessLevel.PRIVATE)
-    @NonNull
-    //BV
-    @NotNull(message = "fk_user ne doit pas etre null")
-    //JPA
-    @Column(name = "fk_user", nullable = false)
-    private String fkUser;
-
-    //LBK
-    @Getter
-    @Setter(value = AccessLevel.PRIVATE)
     @NonNull
     //BV
     @NotNull(message = "date_commande ne doit pas etre null")
@@ -44,9 +26,6 @@ public class Commande extends AbstractPersistable<Long> {
     @Column(name = "date_commande", nullable = false)
     private LocalDate dateCommande;
 
-    //LBK
-    @Getter
-    @Setter(value = AccessLevel.PRIVATE)
     //BV
     @PastOrPresent
     //JPA
@@ -54,12 +33,25 @@ public class Commande extends AbstractPersistable<Long> {
     private LocalDate dateLivraison;
 
     //LBK
-    @Getter
-    @Setter(value = AccessLevel.PRIVATE)
     @NonNull
     //BV
-    @NotNull(message = "fk_user ne doit pas etre null")
+    @NotNull(message = "prix_facture ne doit pas etre null")
     //JPA
-    @Column(name = "fk_user", nullable = false)
+    @Column(name = "prix_facture", nullable = false)
     private Integer prixFacture;
+
+    /* #region forgoing key */
+
+    @NonNull
+    @OneToOne
+    @JoinColumn(name = "fk_satut_commande", nullable = false)
+    private String fkSatutCommande;
+
+    @NonNull
+    @ManyToOne
+    @JoinColumn(name = "fk_user", nullable = false)
+    private String fkUser;
+
+    /* #endregion forgoing key */
+
 }
