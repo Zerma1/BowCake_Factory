@@ -1,6 +1,6 @@
 package fr.cepn.testspringpo84.models;
 
-import fr.cepn.testspringpo84.models.clefComposer.RecetteID;
+import fr.cepn.testspringpo84.models.clefComposer.PanierID;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -16,10 +16,10 @@ import lombok.*;
 public class Panier {
 
     @EmbeddedId
-    private RecetteID id;
+    private PanierID id;
 
     @NonNull
     @Min(0)
     @Column(name = "quantite")
-    private String quantite;
+    private Integer quantite;
 }

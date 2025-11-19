@@ -5,10 +5,13 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "tags", uniqueConstraints = @UniqueConstraint(name = "uk__tags_id", columnNames = {"id"}))
-@ToString(of = {"id", "nom"}, callSuper = true)
-@EqualsAndHashCode(of = {"id", "nom"}, callSuper = false)
+@ToString(of = {"nom"}, callSuper = true)
+@EqualsAndHashCode(of = {"nom"}, callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Tags extends AbstractPersistable<Long> {
     //LBK
@@ -20,4 +23,15 @@ public class Tags extends AbstractPersistable<Long> {
     //JPA
     @Column(name = "nom", nullable = false)
     private String nom;
+
+    @ManyToMany
+    @JoinTable(
+            name = "ingredients_tag",
+            joinColumns = @JoinColumn(name = "tag_id"),
+            inverseJoinColumns = @JoinColumn(name = "ingredient_id")
+    )
+    private Set<Ingredient> ingredients = new HashSet<>();
+
+    @ManyToMany(mappedBy = "tags")
+    private Set<Produit> produits = new HashSet<>();
 }

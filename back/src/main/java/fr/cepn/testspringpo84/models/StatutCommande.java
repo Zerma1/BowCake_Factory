@@ -19,5 +19,5 @@ public class StatutCommande extends AbstractPersistable<Long> {
     @NotNull(message = "statut ne doit pas etre null")
     //JPA
     @Column(name = "statut", nullable = false)
-    private String staut;
+    private String statut;
 }

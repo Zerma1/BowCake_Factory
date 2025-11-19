@@ -9,8 +9,8 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "etatProduit", uniqueConstraints = @UniqueConstraint(name = "uk__etatProduit_id", columnNames = {"id"}))
-@ToString(of = {"id","etat", "temps"}, callSuper = true)
-@EqualsAndHashCode(of = {"id","etat", "temps"}, callSuper = false)
+@ToString(of = {"etat", "dateFin"}, callSuper = true)
+@EqualsAndHashCode(of = {"etat", "dateFin"}, callSuper = false)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class EtatProduit extends AbstractPersistable<Long> {
     //LBK

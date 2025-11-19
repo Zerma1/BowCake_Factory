@@ -16,9 +16,9 @@ import java.io.Serializable;
 public class RecetteID implements Serializable {
 
     @Column(name = "fk_ingredient")
-    private String fk_ingredient;
+    private Long fk_ingredient;
 
     @Column(name = "fk_produit")
-    private String fk_produit;
+    private Long fk_produit;
 
 }

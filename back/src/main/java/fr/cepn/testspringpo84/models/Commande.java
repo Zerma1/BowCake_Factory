@@ -9,8 +9,8 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "commande", uniqueConstraints = @UniqueConstraint(name = "uk__commande_id", columnNames = {"id"}))
-@ToString(of = {"uk__commande_id","fk_satut_commande", "fk_user"}, callSuper = true)
-@EqualsAndHashCode(of = {"uk__commande_id","fk_satut_commande", "fk_user"}, callSuper = false)
+@ToString(of = {"fkSatutCommande", "fkUtilisateur","dateCommande","prixFacture"}, callSuper = true)
+@EqualsAndHashCode(of = {}, callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 
 @Getter
@@ -45,12 +45,12 @@ public class Commande extends AbstractPersistable<Long> {
     @NonNull
     @OneToOne
     @JoinColumn(name = "fk_satut_commande", nullable = false)
-    private String fkSatutCommande;
+    private StatutCommande fkSatutCommande;
 
     @NonNull
     @ManyToOne
-    @JoinColumn(name = "fk_user", nullable = false)
-    private String fkUser;
+    @JoinColumn(name = "fk_utilisateur", nullable = false)
+    private Utilisateur fkUtilisateur;
 
     /* #endregion forgoing key */
 

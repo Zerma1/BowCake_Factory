@@ -20,6 +20,6 @@ public class Recette {
     @NonNull
     @Min(0)
     @Column(name = "quantite")
-    private String quantite;
+    private Integer quantite;
 
 }

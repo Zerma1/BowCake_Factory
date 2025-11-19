@@ -15,8 +15,8 @@ import java.io.Serializable;
 public class PanierID implements Serializable {
 
     @Column(name = "fk_produit")
-    public String fk_produit;
+    public Long fk_produit;
 
     @Column(name = "fk_commande")
-    public String fk_commande;
+    public Long fk_commande;
 }
