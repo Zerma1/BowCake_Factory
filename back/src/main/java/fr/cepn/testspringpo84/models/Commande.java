@@ -11,10 +11,9 @@ import java.time.LocalDate;
 @Table(name = "commande", uniqueConstraints = @UniqueConstraint(name = "uk__commande_id", columnNames = {"id"}))
 @ToString(of = {"fkSatutCommande", "fkUtilisateur","dateCommande","prixFacture"}, callSuper = true)
 @EqualsAndHashCode(of = {}, callSuper = true)
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-
+@NoArgsConstructor
 @Getter
-@Setter(value = AccessLevel.PRIVATE)
+@Setter
 public class Commande extends AbstractPersistable<Long> {
 
     //LBK
@@ -24,7 +23,7 @@ public class Commande extends AbstractPersistable<Long> {
     @PastOrPresent
     //JPA
     @Column(name = "date_commande", nullable = false)
-    private LocalDate dateCommande;
+    private LocalDate dateCommande = LocalDate.now();
 
     //BV
     @PastOrPresent
@@ -34,11 +33,9 @@ public class Commande extends AbstractPersistable<Long> {
 
     //LBK
     @NonNull
-    //BV
-    @NotNull(message = "prix_facture ne doit pas etre null")
-    //JPA
+    @Min(0)
     @Column(name = "prix_facture", nullable = false)
-    private Integer prixFacture;
+    private Integer prixFacture = 0; //peut etre calculer dans le fronte mais in finer doit etre calculer dans le back
 
     /* #region forgoing key */
 

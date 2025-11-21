@@ -16,12 +16,13 @@ public class Utilisateur extends AbstractPersistable<Long> {
 
     @NonNull
     @NotNull(message = "nom ne doit pas etre null")
+    @NotBlank
     @Column(name = "nom", nullable = false)
     private String nom;
 
     @NonNull
-    @NotNull(message = "role ne doit pas etre null")
-    @Column(name = "role", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "fk_role", nullable = false)
     private String role;
 
     @NonNull
@@ -43,7 +44,7 @@ public class Utilisateur extends AbstractPersistable<Long> {
     @NotBlank(message = "le motdepasse ne doit pas être null ou vide")
     @Size(min = 10, max = 255, message = "Le mot de passe doit contenir au moins 10 caractères")
     @Column(name = "motdepasse", nullable = false, length = 10)
-    //TODO: eventuelement trouver un moyer de hacher le mdp en attendent on applique la metode TGCM
+    //TODO: eventuelement trouver un moyer de hacher le mdp, en attendent on applique la metode TGCM
     private String motDePasse;
 
     @NonNull
