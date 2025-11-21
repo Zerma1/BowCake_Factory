@@ -1,6 +1,7 @@
 package fr.cepn.testspringpo84.models;
 
 
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -109,10 +111,12 @@ public class CommandeTest {
     void testConstructeurParDefaut(){
         Commande newCommande = new Commande();
         assertNotNull(newCommande);
-        assertNull(newCommande.getDateCommande());
+        assertNotNull(newCommande.getDateCommande());
         assertNull(newCommande.getDateLivraison());
         assertEquals(0, newCommande.getPrixFacture());
-        assertNull(newCommande.getFkSatutCommande());
+        //noinspection DataFlowIssue
+        assertNull(newCommande.getFkSatutCommande());//erreur : "assertNull" verifi que "FkSatutCommande" est null or,
+                                                     //         "FkSatutCommande" est marque comme "@NonNull".
         assertNull(newCommande.getFkSatutCommande());
     }
 
@@ -126,7 +130,179 @@ public class CommandeTest {
         commande.setDateCommande(LocalDate.of(2025, 1,9));
         assertEquals(LocalDate.of(2025, 1,9), commande.getDateCommande());
     }
+    //TODO : rest test setter correct
     
     /* #endregion setter */
 
+    /* #region test null et non null */
+    //TODO : test non null - Donne
+    @Test
+    @DisplayName("test validation non null dateCommande")
+    void testValidationNonNullDateCommande(){
+        assertThrows(NullPointerException.class, ()-> commande.setDateCommande(null));
+    }
+
+    @Test
+    @DisplayName("test validation null dateLivraison")
+    void testValidationNonNullDateLivraison(){
+        //verifier que commande.setDateLivraison(null) ne renvoi pas d'erreur
+        Set<ConstraintViolation<Commande>> violations = validator.validate(commande);
+        assertTrue(violations.isEmpty());
+    }
+
+    @Test
+    @DisplayName("test validation non null prixFacture")
+    void testValidationNonNullPrixFacture(){
+        assertThrows(NullPointerException.class, ()-> commande.setPrixFacture(null));
+    }
+
+    @Test
+    @DisplayName("test validation non null fkSatutCommande")
+    void testValidationNonNullFkSatutCommande(){
+        assertThrows(NullPointerException.class, ()-> commande.setFkSatutCommande(null));
+    }
+
+    @Test
+    @DisplayName("test validation non null fkUtilisateur")
+    void testValidationNonNullFkUtilisateur(){
+        assertThrows(NullPointerException.class, ()-> commande.setFkUtilisateur(null));
+    }
+
+    /* #endregion test non null */
+
+    /* #region test equals hashcode */
+        //TODO : test equals hashcode
+
+        @Test
+        @DisplayName("Test equal avec meme obj")
+        void testEqual(){
+            assertEquals(commande, commande);
+        }
+
+        @Test
+        @DisplayName("test avec obj identique")
+        void testEqualEquivalent(){
+            /* #region creation commande identique */
+            Commande commande2;
+            commande2 = new Commande();
+            commande2.setDateCommande(LocalDate.of(2025, 11, 11));
+            commande2.setDateLivraison(LocalDate.of(2025,11,16));
+            commande2.setPrixFacture(50);
+            when(mockStatutCommande.getId()).thenReturn(1L);
+            commande2.setFkSatutCommande(mockStatutCommande);
+            when(mockUtilistateur.getId()).thenReturn(1L);
+            commande2.setFkUtilisateur(mockUtilistateur);
+            /* #endregion creation commande identique */
+
+            assertNotEquals(commande, commande2);
+        }
+
+        @Test
+        @DisplayName("test avec obj dif date facture")
+        void testEqualDifDatCom(){
+            /* #region creation commande different */
+            Commande commande2;
+            commande2 = new Commande();
+            commande2.setDateCommande(LocalDate.of(2025, 11, 9));
+            commande2.setDateLivraison(LocalDate.of(2025,11,16));
+            commande2.setPrixFacture(50);
+            when(mockStatutCommande.getId()).thenReturn(1L);
+            commande2.setFkSatutCommande(mockStatutCommande);
+            when(mockUtilistateur.getId()).thenReturn(1L);
+            commande2.setFkUtilisateur(mockUtilistateur);
+            /* #endregion creation commande identique */
+
+            assertNotEquals(commande, commande2);
+        }
+
+        @Test
+        @DisplayName("test avec obj dif prix facture")
+        void testEqualDifPrixFact(){
+            /* #region creation commande different */
+            Commande commande2;
+            commande2 = new Commande();
+            commande2.setDateCommande(LocalDate.of(2025, 11, 11));
+            commande2.setDateLivraison(LocalDate.of(2025,11,16));
+            commande2.setPrixFacture(80);
+            when(mockStatutCommande.getId()).thenReturn(1L);
+            commande2.setFkSatutCommande(mockStatutCommande);
+            when(mockUtilistateur.getId()).thenReturn(1L);
+            commande2.setFkUtilisateur(mockUtilistateur);
+            /* #endregion creation commande different */
+
+            assertNotEquals(commande, commande2);
+        }
+
+        @Test
+        @DisplayName("test avec obj dif statu commande")
+        void testEqualDifFkStatutCommande(){
+            /* #region creation commande different */
+
+            Commande commande2;
+
+            commande2 = new Commande();
+            commande2.setDateCommande(LocalDate.of(2025, 11, 11));
+            commande2.setDateLivraison(LocalDate.of(2025,11,16));
+            commande2.setPrixFacture(50);
+
+
+            when(mockStatutCommande.getId()).thenReturn(2L);
+            commande2.setFkSatutCommande(mockStatutCommande);
+
+
+            when(mockUtilistateur.getId()).thenReturn(1L);
+            commande2.setFkUtilisateur(mockUtilistateur);
+
+            /* #endregion creation commande different */
+
+            assertNotEquals(commande, commande2);
+        }
+
+        @Test
+        @DisplayName("test avec obj dif fkUtilisateur")
+        void testEqualDifFkUtilisateur(){
+            /* #region creation commande different */
+            Commande commande2;
+            commande2 = new Commande();
+            commande2.setDateCommande(LocalDate.of(2025, 11, 11));
+            commande2.setDateLivraison(LocalDate.of(2025,11,16));
+            commande2.setPrixFacture(50);
+            when(mockStatutCommande.getId()).thenReturn(1L);
+            commande2.setFkSatutCommande(mockStatutCommande);
+            when(mockUtilistateur.getId()).thenReturn(2L);
+            commande2.setFkUtilisateur(mockUtilistateur);
+            /* #endregion creation commande different */
+
+            assertNotEquals(commande, commande2);
+        }
+        
+        //TODO : test les hashCode
+
+    /* #endregion test equals hashcode */
+
+    /* #region test ToString */
+    //TODO : test ToString
+
+
+    /* #endregion test ToString */
+
+    /* #region test validation */
+    //TODO : test validation
+
+
+    /* #endregion test validation */
+
+    /* #region test abstractPersistable */
+    //TODO : test abstractPersistable
+
+
+    /* #endregion test abstractPersistable */
+
+    /* #region test scenario metier */
+    //TODO : test scenario metier
+
+
+    /* #endregion test scenario metier */
+
 }
+
